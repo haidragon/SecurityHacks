@@ -17,6 +17,10 @@ sploit4
 
 This was similar to sploit2. The local variables 'len' and 'i' are on the stack. On the iterations that copy 'i' value, the bytes needed to match what was currently in the value. On the iterations that copy the 'len' value, the bytes needed to be updated so that there was enough iteration to reach the return address of 'foo'.
 
+sploit5
+
+This exploits a format string vulnerability. The %hhn control parameter does not print, but instead writes the number of characters successfully printed to the parameter of format function's stack pointer. Four %08x parameters are used to first move the pointer to the start of the formatter. Then the number of characters to write is specified using %c before each %hhn. 'env' variables are used to pass in the address to be overwritten as these go on the stack also.
+
 sploit6
 
 This exploits a double free (freeing a pointer that has already been freed). An inspection of tmalloc showed that the header format is to reserve 8 bytes (4 byte previous pointer and 4 byte next pointer). The smallest bit of the next pointer is used to declare whether the block is free (1 for free). 
