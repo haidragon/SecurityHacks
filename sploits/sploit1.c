@@ -29,8 +29,8 @@ int main (int argc, char* argv[]) {
         args[2] = NULL;
         env[0] = NULL;
 
-        if ( execve (TARGET, args, env) < 0 )
-                fprintf (stderr, "execve failed.\n");
+        if (execve(TARGET, args, env) < 0)
+                fprintf(stderr, "execve failed.\n");
 
         return 0;
 }
