@@ -10,7 +10,7 @@ The function 'foo' performs a strcpy from input (argv) to a 96 byte buffer. We p
 sploit2
 
 The function 'foo' performs a byte-by-byte copy of input (argv) into a 256 byte buffer. The number of bytes copied is limited by len, which has a maximum value of 272. This prevents a direct buffer overflow of the return address (284 bytes are required). Fortunately, after performing stack inspection, it was found that the order of variables on the stack is based on the order of initialization (and not based on order of declaration). We overrode the value of len to 283 so that it would allow us to overwrite the value of the return address of 'foo'.
-Another issue encountered here was that we could only input 2 argv arguments into 'lab_main'. The input needed to have 2 null-terminators, which required the use of envp pointers to continue where the argv input buffer left off.
+Another issue encountered here was that we could only input 2 argv arguments into 'lab_main'. The input needed to have 2 null-terminators, which required the use of envp pointers to continue where the argv input left off.
 
 sploit3
 
