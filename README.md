@@ -16,3 +16,21 @@ The function 'foo' calls upon 'bar' to copy over up to 88 byte from the input (a
 sploit4
 
 This was similar to sploit2. The local variables 'len' and 'i' are on the stack. On the iterations that copy 'i' value, the bytes needed to match what was currently in the value. On the iterations that copy the 'len' value, the bytes needed to be updated so that there was enough iteration to reach the return address of 'foo'.
+
+sploit6
+
+This exploits a double free (freeing a pointer that has already been freed). An inspection of tmalloc showed that the header format is to reserve 8 bytes (4 byte previous pointer and 4 byte next pointer). The smallest bit of the next pointer is used to declare whether the block is free (1 for free). 
+
+Heap                                                           Stack
+            | ++++++++ Exploitable Section ++++++++++ |
+-------------------------------------------------------         -------------------------------
+| p tag     | p (shellcode)         | q tag       | q |   .... | RA        |
+-------------------------------------------------------         -------------------------------
+0x104ee20   0x104ee28               0x104ee70     0x104ee78               0x2021fe68
+
+
+Result:
+-------------------------------------------------------------------------------------------         --------
+| p tag     | fake-prev | fake-next (lsb set) | (shellcode)  | 0x104ee28 | 0x2021fe68 | q |   .... | 0x104ee28 |
+-------------------------------------------------------------------------------------------         --------
+0x104ee20   0x104ee28   +4                    +8             0x104ee70   0x104ee78                 0x2021fe68
